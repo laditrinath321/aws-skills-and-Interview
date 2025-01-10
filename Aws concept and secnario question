@@ -1,0 +1,114 @@
+gives conceptual interview questions on aws as per devops
+
+Here’s a curated list of **conceptual interview questions on AWS** tailored for DevOps roles, categorized by topic. These questions focus on both understanding concepts and applying them in real-world DevOps scenarios.
+
+---
+
+### **1. General AWS and Cloud Computing**
+1. **What is cloud computing, and how does AWS implement it?**
+2. **Explain the shared responsibility model in AWS. How does it apply to security?**
+3. **What are the essential characteristics of cloud computing?**
+4. **How does AWS pricing work? What are some strategies for cost optimization in DevOps?**
+5. **What is the difference between a region and an availability zone in AWS?**
+
+---
+
+### **2. EC2 (Elastic Compute Cloud)**
+1. **What are the different types of EC2 instances? How do you choose the right type for your application?**
+2. **Explain the lifecycle of an EC2 instance.**
+3. **What is the purpose of a custom AMI (Amazon Machine Image)? How is it used in DevOps workflows?**
+4. **How do you troubleshoot EC2 connectivity issues?**
+5. **What is the difference between public and private IP addresses in EC2?**
+
+---
+
+### **3. Networking (VPC, Subnets, Security Groups)**
+1. **What is a VPC, and why is it essential in AWS?**
+2. **Explain the difference between a security group and a NACL. When would you use each?**
+3. **How does a NAT Gateway work, and why is it used in a VPC?**
+4. **What is an Elastic IP, and when would you use it?**
+5. **How do route tables and Internet Gateways work in a VPC?**
+
+---
+
+### **4. Storage Solutions (S3, EBS, EFS, Snapshots)**
+1. **What is the difference between S3, EBS, and EFS?**
+2. **How would you design a storage solution for an application requiring low-latency access to large amounts of data?**
+3. **Explain S3 lifecycle policies and how they can be used for cost optimization.**
+4. **What are EBS snapshots, and how are they useful in DevOps workflows?**
+5. **How do you secure an S3 bucket to prevent unauthorized access?**
+
+---
+
+### **5. Load Balancing and Auto Scaling**
+1. **What is an Elastic Load Balancer (ELB), and what are the different types?**
+2. **How do health checks work with ELB?**
+3. **Explain how Auto Scaling works. How is it different from manual scaling?**
+4. **How would you configure Auto Scaling for a web application to handle unpredictable traffic?**
+5. **What is the role of scaling policies, and how do you configure them?**
+
+---
+
+### **6. Monitoring and Logging (CloudWatch, Alarms)**
+1. **What is CloudWatch, and how is it used in monitoring AWS resources?**
+2. **Explain the difference between CloudWatch metrics, logs, and alarms.**
+3. **How would you set up an alarm to monitor the CPU utilization of an EC2 instance?**
+4. **What are CloudWatch Events, and how can they trigger automated workflows?**
+5. **How do you debug an application using CloudWatch Logs?**
+
+---
+
+### **7. Identity and Access Management (IAM)**
+1. **What is the difference between an IAM role, user, and group?**
+2. **Explain IAM policies and how they control access in AWS.**
+3. **What is the principle of least privilege, and how do you enforce it in IAM?**
+4. **How do you create a customer-managed policy, and when would you use it?**
+5. **What are best practices for securing the root AWS account?**
+
+---
+
+### **8. CI/CD Integration with AWS**
+1. **What AWS services are used for CI/CD pipelines? Explain their roles.**
+   - AWS CodeCommit, CodeBuild, CodeDeploy, CodePipeline
+2. **How do you integrate Jenkins with AWS for CI/CD?**
+3. **What is infrastructure as code, and how is it implemented using CloudFormation or Terraform?**
+4. **Explain blue-green deployments and how they can be implemented in AWS.**
+5. **How do you ensure zero downtime during application deployment in AWS?**
+
+---
+
+### **9. Database Solutions (RDS, Aurora, DynamoDB)**
+1. **What are the differences between RDS, Aurora, and DynamoDB?**
+2. **How do you secure an RDS instance in a private subnet?**
+3. **What is Multi-AZ deployment in RDS, and why is it important?**
+4. **Explain DynamoDB read and write capacity modes.**
+5. **How would you back up and restore a database in AWS RDS?**
+
+---
+
+### **10. Security and Compliance**
+1. **How do you secure AWS resources from unauthorized access?**
+2. **What is AWS Certificate Manager (ACM), and how is it used?**
+3. **What is AWS Shield, and how does it protect against DDoS attacks?**
+4. **How do you configure logging and monitoring to meet compliance requirements?**
+5. **What are AWS Trusted Advisor and its use cases?**
+
+---
+
+### **Scenario-Based Questions**
+1. **You need to deploy a high-availability web application on AWS. What services and architecture would you use?**
+2. **An EC2 instance is running out of disk space. How would you address the issue?**
+3. **You suspect that an S3 bucket has been accessed by unauthorized users. How would you investigate and secure it?**
+4. **How would you migrate an on-premise application to AWS with minimal downtime?**
+5. **A database query is taking too long to execute. How would you troubleshoot and optimize the database in AWS?**
+
+---
+
+### **Key DevOps Concepts for AWS Interviews**
+- **Infrastructure as Code (IaC):** What tools (e.g., CloudFormation, Terraform) are used and how?  
+- **CI/CD Pipelines:** Best practices and AWS integration.  
+- **Monitoring and Observability:** Setting up proactive monitoring and alerts.  
+- **Cost Management:** Using tagging, billing alarms, and Reserved Instances for optimization.  
+- **Automation:** Leveraging Lambda functions or CloudWatch Events for operational tasks.  
+
+Would you like detailed answers or practical demos for any of these questions?
