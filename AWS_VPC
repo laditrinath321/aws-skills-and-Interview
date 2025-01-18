@@ -1,0 +1,166 @@
+Here are the most important **AWS VPC** interview questions, categorized with **detailed answers**:
+
+---
+
+## **1. Conceptual Questions & Answers**
+These test fundamental knowledge of AWS VPC.
+
+### **1. What is AWS VPC? Why is it important?**  
+**Answer:** AWS Virtual Private Cloud (VPC) is a logically isolated network within AWS where users can launch resources in a controlled and secure environment. It allows network segmentation, custom IP addressing, and routing control, making it crucial for security and scalability.
+
+---
+
+### **2. What are the key components of AWS VPC?**  
+**Answer:**  
+- **Subnets** (Public & Private)  
+- **Route Tables** (Defines traffic flow)  
+- **Internet Gateway (IGW)** (Enables internet access)  
+- **NAT Gateway** (Allows private instances to access the internet)  
+- **Security Groups (SGs)** (Instance-level firewall)  
+- **Network ACLs (NACLs)** (Subnet-level firewall)  
+- **Elastic IPs (EIP)** (Static public IPs)  
+- **VPC Peering, Transit Gateway, and VPN** (For interconnectivity)  
+
+---
+
+### **3. What is the difference between a Public and Private Subnet?**  
+**Answer:**  
+- **Public Subnet**: Has a route to the **Internet Gateway (IGW)** and allows direct access to the internet.  
+- **Private Subnet**: No direct internet access; typically uses a **NAT Gateway** to access the internet securely.  
+
+---
+
+### **4. How does an Internet Gateway (IGW) enable public access in VPC?**  
+**Answer:** An **Internet Gateway (IGW)** allows resources in a **public subnet** to send and receive traffic from the internet. To enable public access, you need:  
+- A **route in the route table** pointing to the IGW (`0.0.0.0/0 → IGW`).  
+- An **Elastic IP (EIP)** for instances needing a static public IP.  
+- Proper **Security Group (SG) and Network ACL** rules to allow inbound/outbound traffic.  
+
+---
+
+### **5. What is a NAT Gateway? How is it different from a NAT instance?**  
+**Answer:**  
+- A **NAT Gateway** allows instances in a private subnet to access the internet while keeping them hidden.  
+- **Differences**:  
+  | Feature          | NAT Gateway         | NAT Instance          |
+  |-----------------|--------------------|----------------------|
+  | Managed by AWS  | Yes                | No (requires setup)  |
+  | Scalability     | Highly scalable    | Needs manual scaling |
+  | High availability | Yes (AZ resilient) | No (Single EC2) |
+  | Performance     | Better (multi-Gbps) | Lower (based on instance type) |
+
+---
+
+### **6. What are Security Groups (SG) and Network ACLs (NACLs)? How do they differ?**  
+**Answer:**  
+- **Security Groups (SGs)**: Act as **stateful firewalls** at the **instance** level.  
+- **Network ACLs (NACLs)**: Act as **stateless firewalls** at the **subnet** level.  
+
+| Feature | Security Groups | Network ACLs |
+|---------|---------------|--------------|
+| Level | Instance-level | Subnet-level |
+| Stateful? | Yes | No |
+| Rules evaluation | Evaluates all rules | Evaluates rules in order |
+| Allow/Deny | Only allows traffic | Allows and denies traffic |
+
+---
+
+### **7. What is VPC Peering? How does it work across accounts and regions?**  
+**Answer:**  
+VPC Peering connects two VPCs for direct communication **without a VPN or NAT**.  
+- **Same account & region**: Direct peering.  
+- **Different accounts**: Requires acceptance from both VPC owners.  
+- **Cross-region peering**: Supported but incurs additional costs.  
+
+Limitations:  
+- No transitive routing (i.e., a VPC cannot route traffic via another peered VPC).  
+- Each VPC must have unique CIDR blocks to avoid conflicts.  
+
+---
+
+### **8. What is AWS Transit Gateway? How is it different from VPC Peering?**  
+**Answer:**  
+**AWS Transit Gateway** is a **hub-and-spoke** model for connecting multiple VPCs and on-premises networks at scale.  
+- **Differences:**  
+  | Feature | Transit Gateway | VPC Peering |
+  |---------|----------------|-------------|
+  | Type | Centralized hub | Point-to-point |
+  | Scalability | Scales across thousands of VPCs | Limited to one-to-one connections |
+  | Transitive Routing | Yes | No |
+
+---
+
+### **9. Explain the difference between a VPN connection and Direct Connect.**  
+**Answer:**  
+- **VPN (Virtual Private Network)**: Uses the public internet to establish a **secure** connection between on-premises and AWS.  
+- **AWS Direct Connect**: Provides a **dedicated private** network connection, reducing latency and increasing reliability.  
+
+| Feature | VPN | Direct Connect |
+|---------|-----|--------------|
+| Speed | Up to 1 Gbps | Up to 100 Gbps |
+| Reliability | Less | High |
+| Cost | Low | Higher but stable |
+
+---
+
+## **2. Hands-on Questions & Answers**
+These require practical AWS console or CLI knowledge.
+
+### **10. Create a VPC with two public and two private subnets. What steps will you follow?**  
+**Answer:**  
+1. Create a **VPC** with a CIDR block (e.g., `10.0.0.0/16`).  
+2. Create **two public subnets** (e.g., `10.0.1.0/24`, `10.0.2.0/24`).  
+3. Create **two private subnets** (e.g., `10.0.3.0/24`, `10.0.4.0/24`).  
+4. Attach an **Internet Gateway (IGW)** and update the **public subnet route table** to route `0.0.0.0/0` through the IGW.  
+5. Create a **NAT Gateway** in the public subnet and update **private subnet route tables** to route `0.0.0.0/0` through the NAT Gateway.  
+6. Configure **Security Groups & Network ACLs** as needed.  
+
+---
+
+### **11. How do you set up VPC Peering between two VPCs?**  
+**Answer:**  
+1. **Request Peering** from VPC A to VPC B.  
+2. **Accept Peering Request** from VPC B.  
+3. Update **Route Tables** in both VPCs to allow traffic through the peering connection.  
+4. Ensure **Security Groups & NACLs** allow required traffic.  
+
+---
+
+## **3. Scenario-Based Questions & Answers**
+### **12. A private subnet instance cannot access the internet. How do you troubleshoot?**  
+**Answer:**  
+- Check if the **NAT Gateway** exists and is associated with the correct route table.  
+- Verify **route table entries** (`0.0.0.0/0 → NAT Gateway`).  
+- Ensure **NACLs & Security Groups** allow outbound traffic on necessary ports.  
+
+---
+
+### **13. You need secure communication between two VPCs. What are your options?**  
+**Answer:**  
+1. **VPC Peering** (for small-scale connections).  
+2. **AWS Transit Gateway** (for large-scale interconnections).  
+3. **AWS PrivateLink** (for service-specific connectivity).  
+4. **VPN or Direct Connect** (for on-premises connectivity).  
+
+---
+
+## **4. Troubleshooting Questions**
+### **14. An EC2 instance in a public subnet cannot access the internet. How do you troubleshoot?**  
+**Answer:**  
+- Ensure **IGW is attached** to the VPC.  
+- Check if the **route table** has `0.0.0.0/0 → IGW`.  
+- Verify the instance has a **public IP** or **Elastic IP**.  
+- Allow outbound traffic in **Security Group & NACLs**.  
+
+---
+
+### **15. A VPC Peering connection is not working. How do you fix it?**  
+**Answer:**  
+- Check if the **peering request was accepted**.  
+- Ensure **route tables** have correct entries.  
+- Verify that **Security Groups and NACLs** allow traffic.  
+- Confirm **non-overlapping CIDR blocks** in both VPCs.  
+
+---
+
+These questions will prepare you well for **AWS VPC** interviews. Let me know if you need more details!
