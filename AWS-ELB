@@ -1,0 +1,132 @@
+### **What is an Elastic Load Balancer (ELB) in AWS?**
+
+AWS Elastic Load Balancer (ELB) automatically distributes incoming application traffic across multiple targets (such as EC2 instances, containers, or IP addresses) in one or more Availability Zones. It ensures high availability, fault tolerance, and scalability of your applications.
+
+---
+
+### **Why Use ELB in AWS?**
+
+1. **High Availability:** Ensures applications are always reachable by distributing traffic across multiple targets and zones.
+2. **Fault Tolerance:** Automatically reroutes traffic to healthy instances when some targets become unhealthy.
+3. **Scalability:** Handles variable workloads by automatically adjusting traffic distribution.
+4. **Security:** Supports SSL/TLS termination and integration with AWS WAF for application protection.
+5. **Custom Routing:** Allows path- or host-based routing for better traffic management.
+
+---
+
+### **How Does ELB Work?**
+
+1. **Types of Load Balancers:**
+   - **Application Load Balancer (ALB):** Operates at Layer 7 (HTTP/HTTPS) and supports advanced routing features.
+   - **Network Load Balancer (NLB):** Operates at Layer 4 (TCP/UDP) for high-performance and low-latency applications.
+   - **Gateway Load Balancer (GWLB):** Combines traffic distribution and network inspection.
+   - **Classic Load Balancer (CLB):** Operates at Layer 4 and Layer 7; legacy option.
+
+2. **Components:**
+   - **Listeners:** Define how ELB receives requests and forwards them to targets.
+   - **Target Groups:** Define the registered targets (e.g., EC2 instances) and health check settings.
+   - **Health Checks:** Monitor the health of targets and route traffic only to healthy instances.
+
+---
+
+### **Practical Use Case of ELB**
+
+**Scenario: Scalable Web Application**
+- **Problem:** A web application serving a global audience experiences traffic spikes and needs redundancy.
+- **Solution:**
+  1. Deploy an Application Load Balancer across multiple Availability Zones.
+  2. Configure target groups with EC2 instances running the application.
+  3. Enable sticky sessions to maintain user sessions.
+  4. Set up HTTPS listeners for secure communication.
+- **Outcome:** The application remains responsive and secure, even during traffic spikes, by balancing load and rerouting traffic to healthy targets.
+
+---
+
+### **Interview Questions on ELB**
+
+#### **Conceptual Questions**
+1. **What is the purpose of an Elastic Load Balancer in AWS?**
+   - **Answer:** ELB distributes incoming traffic across multiple targets, ensuring high availability, fault tolerance, and scalability.
+
+2. **What are the types of AWS load balancers, and how do they differ?**
+   - **Answer:** 
+     - **ALB:** Operates at Layer 7, supports advanced routing (path-based, host-based).
+     - **NLB:** Operates at Layer 4, supports high throughput and low latency.
+     - **GWLB:** Focuses on traffic inspection and forwarding.
+     - **CLB:** Legacy option, operates at both Layer 4 and Layer 7.
+
+3. **What is the difference between an Application Load Balancer and a Network Load Balancer?**
+   - **Answer:**
+     - **ALB:** For HTTP/HTTPS, supports web application traffic with routing features.
+     - **NLB:** For TCP/UDP, used for high-performance, low-latency applications.
+
+4. **How does ELB ensure fault tolerance?**
+   - **Answer:** ELB monitors the health of targets using health checks and routes traffic only to healthy instances.
+
+---
+
+#### **Hands-on Questions**
+1. **How do you configure an Application Load Balancer?**
+   - **Answer:**
+     - Create an ALB and add listeners (HTTP/HTTPS).
+     - Define target groups and register EC2 instances or containers.
+     - Set up health checks and configure security groups.
+
+2. **How would you configure path-based routing in an Application Load Balancer?**
+   - **Answer:**
+     - Add listener rules in ALB for specific paths.
+     - Route traffic to target groups based on the URL (e.g., `/api` -> backend servers).
+
+3. **How do you configure SSL/TLS termination on an Application Load Balancer?**
+   - **Answer:**
+     - Obtain an SSL certificate from AWS Certificate Manager (ACM).
+     - Add an HTTPS listener to the ALB and attach the certificate.
+     - Configure redirection from HTTP to HTTPS.
+
+---
+
+#### **Scenario-Based Questions**
+1. **Your application is experiencing uneven traffic, and some EC2 instances are overloaded. How would you resolve this?**
+   - **Answer:**
+     - Use an Elastic Load Balancer to distribute traffic evenly across instances.
+     - Check health checks to ensure traffic is routed only to healthy targets.
+     - Implement Auto Scaling to handle traffic spikes.
+
+2. **A web application needs to route requests to different microservices based on the URL path. What would you do?**
+   - **Answer:**
+     - Use an Application Load Balancer.
+     - Configure path-based routing rules (e.g., `/user` -> User Service, `/order` -> Order Service).
+     - Assign appropriate target groups for each service.
+
+3. **What would you do if users are reporting intermittent connection issues to your application?**
+   - **Answer:**
+     - Check the health check configuration for the target group.
+     - Verify if the instances are in a healthy state.
+     - Analyze CloudWatch metrics for high latency or errors.
+     - Check the security group rules of the load balancer and targets.
+
+---
+
+#### **Troubleshooting Questions**
+1. **The ELB is not forwarding traffic to targets. How would you troubleshoot?**
+   - **Answer:**
+     - Verify the target group has registered instances.
+     - Check the health status of targets.
+     - Ensure the security group allows traffic from the load balancer.
+     - Validate the listener and routing rules.
+
+2. **Health checks are failing for some targets. What steps would you take?**
+   - **Answer:**
+     - Check the health check endpoint on the targets.
+     - Verify security group rules for the health check requests.
+     - Ensure the application responds correctly to the health check path.
+
+3. **Traffic to your application is unevenly distributed. What could be the issue?**
+   - **Answer:**
+     - Check if sticky sessions are enabled (may cause uneven traffic distribution).
+     - Verify the load balancing algorithm (default is round robin for ALB).
+
+---
+
+### **Summary**
+Elastic Load Balancer is essential for scaling and maintaining the availability of applications. It supports advanced traffic management, fault tolerance, and secure connections. Mastering ELB through concepts, hands-on experience, and troubleshooting scenarios is crucial for managing AWS cloud infrastructure effectively.
