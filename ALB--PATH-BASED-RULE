@@ -1,0 +1,352 @@
+Below is the **step-by-step end-to-end procedure** to set up the described scenario with all necessary commands.
+
+---
+
+### **1. Launch Two EC2 Instances**
+1. **Create EC2 Instances**:
+   - Launch two EC2 instances in the same VPC.
+   - Select Amazon Linux 2 or any Linux distribution.
+   - Assign a Security Group with inbound rules allowing HTTP (port 80) traffic from the ALB.
+
+2. **Install `httpd` (Apache) Web Server**:
+   SSH into each instance and run the following commands:
+
+   **On EC2-1**:
+   ```bash
+   sudo yum update -y
+   sudo yum install -y httpd
+   sudo systemctl start httpd
+   sudo systemctl enable httpd
+   sudo mkdir -p /var/www/html/aws
+   echo "Welcome to AWS Page on EC2-1" | sudo tee /var/www/html/aws/index.html
+   ```
+
+   **On EC2-2**:
+   ```bash
+   sudo yum update -y
+   sudo yum install -y httpd
+   sudo systemctl start httpd
+   sudo systemctl enable httpd
+   sudo mkdir -p /var/www/html/devops
+   echo "Welcome to DevOps Page on EC2-2" | sudo tee /var/www/html/devops/index.html
+   ```
+
+---
+
+### **2. Create an Application Load Balancer (ALB)**
+1. Go to the **EC2 Dashboard** → **Load Balancers** → Create a Load Balancer.
+2. **Select Application Load Balancer**:
+   - Scheme: Internet-facing.
+   - Listener: HTTP on port 80.
+   - Availability Zones: Choose subnets in the same VPC as the EC2 instances.
+
+3. **Configure Security Groups**:
+   - Assign a Security Group to the ALB allowing inbound HTTP (port 80) traffic from anywhere.
+
+---
+
+### **3. Create Target Groups**
+1. **Target Group for EC2-1**:
+   - Go to **Target Groups** → Create Target Group.
+   - Choose **Instances** as the target type.
+   - Name: `target-group-1`.
+   - Protocol: HTTP, Port: 80.
+   - Register **EC2-1** to this target group.
+   - Configure health checks:
+     - Path: `/aws/`.
+
+2. **Target Group for EC2-2**:
+   - Create another target group for EC2-2.
+   - Name: `target-group-2`.
+   - Protocol: HTTP, Port: 80.
+   - Register **EC2-2** to this target group.
+   - Configure health checks:
+     - Path: `/devops/`.
+
+---
+
+### **4. Configure Listener Rules**
+1. Go to the **Listeners** section of the ALB.
+2. Add the following path-based routing rules:
+   - **Rule 1**: If the path is `/aws/*`, forward traffic to `target-group-1`.
+   - **Rule 2**: If the path is `/devops/*`, forward traffic to `target-group-2`.
+3. Set a default target group (e.g., `target-group-1`).
+
+---
+
+### **5. Verify Security Group Configuration**
+1. **For EC2 Instances**:
+   - Ensure the EC2 Security Groups allow inbound traffic on port 80 from the ALB’s Security Group.
+
+   Example Security Group Rule:
+   ```bash
+   Type: HTTP
+   Protocol: TCP
+   Port Range: 80
+   Source: Custom (ALB's Security Group)
+   ```
+
+2. **For ALB**:
+   - Allow inbound traffic on port 80 from anywhere (0.0.0.0/0).
+
+---
+
+### **6. Configure DNS (Optional)**
+1. If you want to use a custom domain (e.g., `DNS.com`), set up Route 53:
+   - Create an **A record** or **CNAME** pointing to the ALB’s DNS name (`netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com`).
+
+---
+
+### **7. Test the Configuration**
+1. Open a browser and test the following URLs:
+   - **Default page**:
+     ```
+     http://netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com
+     ```
+   - **AWS page**:
+     ```
+     http://netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com/aws/
+     ```
+   - **DevOps page**:
+     ```
+     http://netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com/devops/
+     ```
+
+2. You should see:
+   - Default page served by the default target group.
+   - `/aws/` served by EC2-1.
+   - `/devops/` served by EC2-2.
+
+---
+
+### **8. Troubleshooting**
+If the pages are not loading:
+1. Check the ALB Listener Rules for proper path-based routing.
+2. Verify Target Group health status in the **Target Groups** section.
+3. Ensure Security Groups allow necessary traffic.
+4. Use `curl` commands to debug connectivity:
+   ```bash
+   curl -I http://netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com/aws/
+   curl -I http://netalb-779ee092d12026c5.elb.ap-south-1.amazonaws.com/devops/
+   ```
+
+---
+
+This setup should successfully configure the ALB and EC2 instances to serve content based on the specified paths. Let me know if you need further clarification or help!
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+echo "Welcome to AWS Page on EC2-1" | sudo tee /var/www/html/aws/index.html
+
+What does this command do
+
+This command writes the text `"Welcome to AWS Page on EC2-1"` into a file named `index.html` located at `/var/www/html/aws/`. Here's a breakdown of the command:
+
+---
+
+### **Command Breakdown**
+1. **`echo "Welcome to AWS Page on EC2-1"`**  
+   - The `echo` command prints the string `"Welcome to AWS Page on EC2-1"` to the standard output (your terminal by default).  
+   - In this case, it outputs the text: `Welcome to AWS Page on EC2-1`.
+
+2. **`|` (Pipe)**  
+   - The pipe operator `|` takes the output from the command on the left (`echo`) and passes it as input to the command on the right (`sudo tee`).
+
+3. **`sudo tee /var/www/html/aws/index.html`**  
+   - The `tee` command writes the input it receives to both:
+     - The specified file (`/var/www/html/aws/index.html`).
+     - The standard output (your terminal).
+   - The `sudo` prefix ensures the command has administrative privileges, which are required to write to directories like `/var/www/html/`.
+
+---
+
+### **Result of the Command**
+1. The file `/var/www/html/aws/index.html` is created (or overwritten if it already exists).
+2. The content of the file will be:
+   ```
+   Welcome to AWS Page on EC2-1
+   ```
+
+3. The text `"Welcome to AWS Page on EC2-1"` will also be displayed in the terminal because `tee` outputs to both the file and the terminal.
+
+---
+
+### **Why Use `sudo tee` Instead of Redirection (`>`)?**
+Normally, you might use `>` for file writing:
+```bash
+echo "Welcome to AWS Page on EC2-1" > /var/www/html/aws/index.html
+```
+However, if the file or directory requires root permissions (like `/var/www/html/`), the redirection (`>`) will fail unless run as root. Using `sudo tee` allows you to bypass this limitation while still running the `echo` command as a non-root user.
+
+---
+
+This command is often used in automation scripts to create configuration or content files in web server directories.
+
+Add the following path-based routing rules:
+Rule 1: If the path is /aws/*, forward traffic to target-group-1.
+Rule 2: If the path is /devops/*, forward traffic to target-group-2.
+
+HOW TO DO THIS
+
+
+Here is the step-by-step guide to configure **path-based routing rules** in the Application Load Balancer (ALB) using the AWS Management Console:
+
+---
+
+### **Step-by-Step Procedure**
+
+#### **1. Access the Load Balancer Settings**
+1. Go to the **AWS Management Console**.
+2. Navigate to the **EC2 Dashboard** → **Load Balancers**.
+3. Select the **Application Load Balancer (ALB)** you created.
+
+---
+
+#### **2. Add Path-Based Routing Rules**
+1. **Go to Listeners**:
+   - In the Load Balancer details page, scroll down to the **Listeners** section.
+   - Find the listener for **HTTP:80** and click on **View/Edit Rules**.
+
+2. **Modify Rules**:
+   - You'll see the default rule (e.g., "If no conditions match, forward traffic to...").
+   - Click on the **+ (Add Rule)** button to add new rules.
+
+3. **Configure Rule 1**:
+   - Click **Add Condition** → Select **Path**.
+   - Enter the path pattern: `/aws/*`
+   - Click **Add Action** → Select **Forward to**.
+   - Choose `target-group-1` from the dropdown list.
+   - Click **Save Rule**.
+
+4. **Configure Rule 2**:
+   - Click **Add Rule** again to create the second rule.
+   - Add Condition → Select **Path**.
+   - Enter the path pattern: `/devops/*`
+   - Add Action → Select **Forward to**.
+   - Choose `target-group-2` from the dropdown list.
+   - Click **Save Rule**.
+
+---
+
+#### **3. Adjust Rule Priority**
+- Ensure that the rules are evaluated in the correct order:
+  - Rule 1 (Path `/aws/*`) should have higher priority than the default rule.
+  - Rule 2 (Path `/devops/*`) should also have a higher priority than the default rule.
+- AWS will automatically assign priorities, but you can reorder them if needed.
+
+---
+
+#### **4. Set the Default Rule**
+- Ensure the default action (last rule) forwards traffic to one of the target groups (e.g., `target-group-1`) if no path matches.
+
+---
+
+### **Verify Your Configuration**
+1. After adding the rules, test the following URLs in your browser:
+   - **http://<ALB-DNS-Name>/aws/** → Should forward traffic to `target-group-1` (EC2-1).
+   - **http://<ALB-DNS-Name>/devops/** → Should forward traffic to `target-group-2` (EC2-2).
+   - **http://<ALB-DNS-Name>/** → Should go to the default target group.
+
+2. If necessary, troubleshoot by:
+   - Checking ALB **Access Logs**.
+   - Ensuring both EC2 instances pass health checks.
+
+---
+
+### **Optional: AWS CLI Approach**
+If you prefer to do this via the CLI, use the following commands to add the rules:
+
+1. **Add Rule for `/aws/*`:**
+   ```bash
+   aws elbv2 create-rule \
+       --listener-arn <listener-arn> \
+       --conditions Field=path-pattern,Values='/aws/*' \
+       --priority 1 \
+       --actions Type=forward,TargetGroupArn=<target-group-1-arn>
+   ```
+
+2. **Add Rule for `/devops/*`:**
+   ```bash
+   aws elbv2 create-rule \
+       --listener-arn <listener-arn> \
+       --conditions Field=path-pattern,Values='/devops/*' \
+       --priority 2 \
+       --actions Type=forward,TargetGroupArn=<target-group-2-arn>
+   ```
+
+---
+
+This procedure ensures that traffic is routed correctly based on the specified paths. Let me know if you need further assistance!
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/
+
+This is my default dns alb
+
+
+Your default DNS for the ALB is:  
+`https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/`
+
+---
+
+### **How it Works with Default Routing**
+1. **Default Rule**: If no specific path-based routing rules are configured, all traffic to the ALB will be forwarded to the default target group.
+   - If a default target group is set to one of your EC2 instances, this URL should serve the default page from that instance.
+
+2. **To Test**:
+   - Open the URL in your browser:  
+     ```
+     https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/
+     ```
+   - It should display the default web page from your EC2 instance (configured in the default target group).
+
+---
+
+### **Adding Path-Based Routing**
+If you’ve already configured path-based routing rules like:
+- `/aws/*` → Target Group 1 (EC2-1)
+- `/devops/*` → Target Group 2 (EC2-2)
+
+You can test the routing by adding the specific paths to the URL:
+
+#### **Test Path 1: AWS Page**
+```
+https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/aws/
+```
+- This should display the page served by EC2-1 (Target Group 1).
+
+#### **Test Path 2: DevOps Page**
+```
+https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/devops/
+```
+- This should display the page served by EC2-2 (Target Group 2).
+
+#### **Default Path**
+If you visit the base URL without a path:
+```
+https://trinath-alb-460434828.us-east-1.elb.amazonaws.com/
+```
+It will serve the page from the default target group.
+
+---
+
+### **Troubleshooting**
+If the pages do not load:
+1. **Check ALB Rules**:
+   - Ensure the path-based routing rules are correctly configured in the ALB Listener settings.
+
+2. **Verify Target Groups**:
+   - Confirm that the EC2 instances in each target group pass health checks.
+
+3. **Security Groups**:
+   - Verify the ALB’s security group allows HTTP/HTTPS traffic from all sources (or specific IPs if restricted).
+
+4. **Logs**:
+   - Check ALB access logs or EC2 logs for further debugging.
+
+---
+
+Let me know how the test works or if you need further help!
+
+
